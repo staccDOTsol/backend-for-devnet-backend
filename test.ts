@@ -969,6 +969,8 @@ let upd =  await program.rpc.update( new BN(abull),new BN(abear),currentEpoch,  
     }
   }, 7 * 1000);
 }
+setTimeout(async function(){
 
-main();
 app.listen(3000 || process.env.PORT)
+}, 1000)
+main();

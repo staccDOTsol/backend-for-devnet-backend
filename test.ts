@@ -858,12 +858,12 @@ async function main() {
   let wallet = Keypair.fromSecretKey(
     new Uint8Array(
       JSON.parse(
-        fs.readFileSync("./id.json").toString()
+        fs.readFileSync("./key.json").toString()
       )
     )
   );
-let connection = new Connection ("https://api.devnet.solana.com")
-  await connection.requestAirdrop(wallet.publicKey, 1 * 10 ** 18);
+let connection = new Connection ("https://solana--devnet.datahub.figment.io/apikey/fff8d9138bc9e233a2c1a5d4f777e6ad")
+  //await connection.requestAirdrop(wallet.publicKey, 1 * 10 ** 18);
  //  connection = new Connection("https://solana--devnet.datahub.figment.io/apikey/fff8d9138bc9e233a2c1a5d4f777e6ad");
 
 //  let pdas = await connection.getProgramAccounts(PROGRAM_ID_IDL)

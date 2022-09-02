@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import express from 'express'
 import { update } from "./instructions";
 import BN from "bn.js";

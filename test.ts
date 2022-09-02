@@ -1,3 +1,4 @@
+import express from 'express'
 import { update } from "./instructions";
 import BN from "bn.js";
 require("dotenv").config();
@@ -21,7 +22,7 @@ import {web3} from '@project-serum/anchor'
 import { PROGRAM_ID, PROGRAM_ID_IDL } from "./programId";
 
 
-
+const app = new express() 
 export const getMatch = async (
   me: web3.PublicKey,
   epoch: number
@@ -968,3 +969,4 @@ let upd =  await program.rpc.update( new BN(abull),new BN(abear),currentEpoch,  
 }
 
 main();
+app.listen(3000 || process.env.PORT)

@@ -31,6 +31,7 @@
     "hardhat-typechain": "^0.3.5",
     "ipfs-only-hash": "^4.0.0",
     "recursive-fs": "^2.1.0",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "tsc": "^2.0.4"
   }
 }

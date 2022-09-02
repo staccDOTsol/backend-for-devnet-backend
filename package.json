@@ -4,8 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "yarn ts-node test.ts",
-"install": "yarn --force"
+    "start": "npx ts-node test.ts"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",

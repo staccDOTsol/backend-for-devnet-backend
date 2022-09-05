@@ -866,7 +866,7 @@ let connection = new Connection ("https://solana--devnet.datahub.figment.io/apik
         stuff = 0
         stuffbear = 0
         }
-          let stuff2 =JSON.parse( fs.readFileSync("/Users/jarettdunn/notpancake/stuff.json").toString())
+          let stuff2 =JSON.parse( fs.readFileSync("./stuff.json").toString())
 for (var stu of stuff2){
 
           const [predictions, bump] = (await getMatch(wallet.publicKey, (currentEpoch)))

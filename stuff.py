@@ -78,6 +78,7 @@ h = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/
 
 
 def scraper(num_pages=1, req_delay=0.1):
+ try:
   list_of_bets=[]
   timestamp = datetime.datetime.now().strftime ("%Y%m%d_%H%M%S")
 
@@ -210,21 +211,25 @@ def scraper(num_pages=1, req_delay=0.1):
     #sleep(1000)
         #print(vars(cells))
         #blah,txn_hash,method,block,age,f,to,value,txn_fee= cells
-
+ except:
+    abc=123
 
 def main():
-    if len(sys.argv) > 2:
-        scraper(int(sys.argv[1]), float(sys.argv[2]))
-    elif len(sys.argv) == 2:
-        scraper(int(sys.argv[1]))
-    else:
-        scraper()
-
+    try:
+        if len(sys.argv) > 2:
+            scraper(int(sys.argv[1]), float(sys.argv[2]))
+        elif len(sys.argv) == 2:
+            scraper(int(sys.argv[1]))
+        else:
+            scraper()
+    except:
+        abc=123
 if __name__ == "__main__":
-
-    for u in range(0,100):
-        main()
-
+    while True:
+        try:
+            main()
+        except:
+            abc=123
 
 
 

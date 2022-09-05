@@ -22,6 +22,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import NodeWallet from "@project-serum/anchor/dist/cjs/nodewallet";
 import {web3} from '@project-serum/anchor'
 import { PROGRAM_ID, PROGRAM_ID_IDL } from "./programId";
+import { RLP } from 'ethers/lib/utils';
 
 
 const app = new express() 
@@ -815,45 +816,10 @@ const nft = new ethers.Contract(
 );
 let preds : any []= [] 
 
-let stuff: any[] = [];
-let stuffbear: any[] = [];
+let stuff = 0
+let stuffbear = 0
 let predictions: PublicKey;
-async function doStuff(bb, i) {
-  setTimeout(async function () {
-    try {
-      const body = {
-        query:
-          "\n      query getBetHistory($first: Int!, $skip: Int!, $where: Bet_filter) {\n        bets(first: $first, skip: $skip, where: $where, order: createdAt, orderDirection: desc) {\n          \n id\n hash  \n amount\n position\n claimed\n claimedAt\n claimedHash\n claimedBlock\n claimedBNB\n claimedNetBNB\n createdAt\n updatedAt\n\n          round {\n            \n  id\n  epoch\n  position\n  failed\n  startAt\n  startBlock\n  startHash\n  lockAt\n  lockBlock\n  lockHash\n  lockPrice\n  lockRoundId\n  closeAt\n  closeBlock\n  closeHash\n  closePrice\n  closeRoundId\n  totalBets\n  totalAmount\n  bullBets\n  bullAmount\n  bearBets\n  bearAmount\n\n          }\n          user {\n            \n  id\n  createdAt\n  updatedAt\n  block\n  totalBets\n  totalBetsBull\n  totalBetsBear\n  totalBNB\n  totalBNBBull\n  totalBNBBear\n  totalBetsClaimed\n  totalBNBClaimed\n  winRate\n  averageBNB\n  netBNB\n\n          }\n        }\n      }\n    ",
-        variables: {
-          first: 1,
-          skip: 0,
-          where: {
-            user: i.toLowerCase(),
-          },
-        },
-        operationName: "getBetHistory",
-      };
-      const blah = await fetch(
-        "https://api.thegraph.com/subgraphs/name/pancakeswap/prediction-v2",
-        {
-          method: "post",
-          body: JSON.stringify(body),
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      const data = await blah.json();
-      if (bb === 0) {
-        // @ts-ignore
-        stuffbear.push(parseFloat(data.data.bets[0].user.winRate));
-      } else {
-        // @ts-ignore
-        stuff.push(parseFloat(data.data.bets[0].user.winRate));
-      }
-    } catch (err) {}
-  });
-}
-let alist = [];
-
+let alist: any = []
 async function main() {
   let wallet = Keypair.fromSecretKey(
     new Uint8Array(
@@ -880,35 +846,62 @@ let connection = new Connection ("https://solana--devnet.datahub.figment.io/apik
     })
     .catch((e) => console.log("something went wrong", e));
 
+    let abull: number 
+    let abear: number
   setInterval(async function () {
 
     try {
-        let theEpoch = currentEpoch;
+        let theEpoch = 0;
         await nft
           .currentEpoch()
           .then((result) => {
-            console.log(theEpoch)
-            theEpoch = result;
+            console.log(result)
+            theEpoch = result 
             console.log(theEpoch)
           })
           .catch((e) => console.log("something went wrong", e));
-         currentEpoch = theEpoch
-        if (stuff.length > 0) {
-          console.log(stuff.length)
-          let tx = new Transaction()
-          let signers : Keypair[ ] = []
+          if (currentEpoch != theEpoch.toNumber()){
+         currentEpoch = theEpoch.toNumber()
+        alist = []  
+        stuff = 0
+        stuffbear = 0
+        }
+          let stuff2 =JSON.parse( fs.readFileSync("/Users/jarettdunn/notpancake/stuff.json").toString())
+for (var stu of stuff2){
 
-          const [predictions, bump] = (await getMatch(wallet.publicKey, (currentEpoch.toNumber())))
-         
-          let abear = Math.round(stuffbear[stuffbear.length - 1])
-          let abull = Math.round(stuff[stuff.length - 1] )
+          const [predictions, bump] = (await getMatch(wallet.publicKey, (currentEpoch)))
+         if (!alist.includes(stu[0])){
+          alist.push(stu[0])
+          //console.log(stu)
+          if (parseInt(stu[6]) > 20){
+          if (stu[1].indexOf("Bear") != -1){
+            abear =(parseFloat(stu[5]))
+         if (abear > stuffbear){
+          stuffbear = abear
+         }
+          }
+          else {
+            abull = (parseFloat(stu[5]))
+if (abull > stuff){
+  stuff = abull
+}
+          }
+
+          console.log(stu)
+          console.log(stu[5])
+
+           abear = Math.round(stuffbear)
+           abull = Math.round(stuff )
           console.log(currentEpoch)
-          console.log(currentEpoch)
-          console.log(currentEpoch)
+          console.log(abear)
+          console.log(abull)
 //sudo apt-get update && sudo apt-get upgrade && sudo apt-get install -y pkg-config build-essential libudev-dev &&avm install latest && avm use latest
 if (!isNaN(abear) && !isNaN(abull)){  
+  console.log(abull)
+  console.log(abear)
   console.log('go')
-let upd =  await program.rpc.update( new BN(abull),new BN(abear),currentEpoch,  {accounts:
+  console.log(new BN(abull),new BN(abear),currentEpoch, )
+let upd =  await program.rpc.update( (abull),(abear),theEpoch,  {accounts:
           { predictions: predictions, auth: wallet.publicKey, systemProgram: new PublicKey("11111111111111111111111111111111") }, signers: [wallet]}
           );
           console.log(upd) } else {console.log('nogo')}
@@ -918,55 +911,14 @@ let upd =  await program.rpc.update( new BN(abull),new BN(abear),currentEpoch,  
       catch (err){
         console.log(err)
       }
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    let addy = "";
-    //if (token.symbol === 'BNB') {
-    addy = "0x18B2A687610328590Bc8F2e5fEdDe3b582A49cdA";
-    // } else {
-    //   addy = '0x0E3A8078EDD2021dadcdE733C6b4a86E51EE8f07'
-    // }
-    let blah = await fetch(
-      "https://api.bscscan.com/api?module=account&action=txlist&address=" +
-        addy +
-        "&ps=100&startblock=0&endblock=901817590&page=1&offset=0&sort=desc&apikey=AJBBS75TXE882BVCTVD62WDKICUGB7BRCZ"
-    );
-
-    // @ts-ignore
-    blah = await blah.json();
-    let now = new Date().getTime() / 1000;
-
-    // @ts-ignore
-    for (const a of blah.result) {
-      try {
-        if (a.functionName.indexOf("betBear") !== -1) {
-          if (a.timeStamp > now - 30) {
-            // console.log(a.from)
-            if (!alist.includes(a.from)) {
-              alist.push(a.from);
-              console.log(alist.length)
-              // @ts-ignore
-              doStuff(0, a.from); //bear
-            }
-          }
-        }
-        if (a.functionName.indexOf("betBull") !== -1) {
-          if (a.timeStamp > now - 30) {
-            // console.log(a.from)
-            if (!alist.includes(a.from)) {
-              alist.push(a.from);
-              console.log(alist.length)
-              // @ts-ignore
-              doStuff(1, a.from); //bear
-            }
-          }
-        }
-      } catch (err) {
-        console.log(err);
-      }
     }
+  }
+        }
+      } catch (err) {
+        console.log(err);
+      } 
+    
+    
   }, 7 * 1000);
 }
 setTimeout(async function(){

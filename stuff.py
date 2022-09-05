@@ -213,7 +213,6 @@ def scraper(num_pages=1, req_delay=0.1):
 
 
 def main():
-  while True:
     if len(sys.argv) > 2:
         scraper(int(sys.argv[1]), float(sys.argv[2]))
     elif len(sys.argv) == 2:

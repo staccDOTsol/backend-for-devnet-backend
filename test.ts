@@ -14,7 +14,6 @@ import {
   Transaction,
 } from "@solana/web3.js";
 import fetch from "node-fetch";
-import { Predictions } from './accounts'
 import { AnchorProvider, Program, Provider } from '@project-serum/anchor'
 import fs from "fs";
 
@@ -810,14 +809,10 @@ let provider = ethers.provider;
 
 let currentEpoch = new BN(0);
 // https://docs.ethers.io/v5/api/contract/contract
-const privateKey = `0x29f5f70abd54a593d91ee115f49b2cdd258e89ddc8e26f6248724a3932f452da`;
-const wallet = new ethers.Wallet(privateKey);
-
-const signer = wallet.connect(provider);
 const nft = new ethers.Contract(
   "0x18b2a687610328590bc8f2e5fedde3b582a49cda",
   contractInterface,
-  signer
+  provider
 );
 let preds : any []= [] 
 
@@ -826,6 +821,7 @@ let stuffbear = 0
 let predictions: PublicKey;
 let alist: any = []
 async function main() {
+  try{ 
   let wallet = Keypair.fromSecretKey(
     new Uint8Array(
       JSON.parse(
@@ -833,54 +829,100 @@ async function main() {
       )
     )
   );
-  let thei = 6
 let connection = new Connection ("https://solana--devnet.datahub.figment.io/apikey/fff8d9138bc9e233a2c1a5d4f777e6ad")
   //await connection.requestAirdrop(wallet.publicKey, 1 * 10 ** 18);
  //  connection = new Connection("https://solana--devnet.datahub.figment.io/apikey/fff8d9138bc9e233a2c1a5d4f777e6ad");
 
- let pdas = await connection.getProgramAccounts(PROGRAM_ID_IDL)
- let whas : any [] = []
-let w = 0 
-let l = 0
-await nft
-.currentEpoch()
-.then(async (eee) => {
-for (var pda of pdas){
- let wha = await Predictions.fetch(connection, pda.pubkey)
+//  let pdas = await connection.getProgramAccounts(PROGRAM_ID_IDL)
+ // console.log(pdas.length)
+  let prov2 = new AnchorProvider(connection, new NodeWallet( wallet ), {skipPreflight:true, commitment: "confirmed"})
+  const idl = await Program.fetchIdl(PROGRAM_ID, prov2);
+  
+    const program = new Program(idl, PROGRAM_ID, prov2);
+  
+  await nft
+    .currentEpoch()
+    .then((result) => {
+      console.log(result);
+    })
+    .catch((e) => console.log("something went wrong", e));
 
-if (wha.epoch == eee){
-  //console.log(wha)
-  if (true){
-        //up 
-        await nft.betBull( eee,{value:(new BN(0.001 * 10 ** 18)), })
+    let abull: number 
+    let abear: number
+  setInterval(async function () {
 
-        if (wha.kbear > wha.kbull + thei && wha.kbear > 60&& wha?.kbull > 40){
-          await nft.betBear( eee,{value:(new BN(0.01 * 10 ** 18)), })
-          setTimeout(async function(){
-
-            await nft.claim(eee)
-                      }, 60 * 1000 * 16)
+    try {
+        let theEpoch = 0;
+        await nft
+          .currentEpoch()
+          .then((result) => {
+            console.log(result)
+            theEpoch = result 
+            console.log(theEpoch)
+          })
+          .catch((e) => console.log("something went wrong", e));
+          if (currentEpoch != theEpoch.toNumber()){
+         currentEpoch = theEpoch.toNumber()
+        alist = []  
+        stuff = 0
+        stuffbear = 0
         }
-        else if (wha.kbull > wha.kbear + thei && wha.kbull > 60&& wha?.kbear > 40){
-          await nft.betBull( eee,{value:(new BN(0.01 * 10 ** 18)), })
-          setTimeout(async function(){
+          let stuff2 =JSON.parse( fs.readFileSync("./stuff.json").toString())
+for (var stu of stuff2){
 
-await nft.claim(eee)
-          }, 60 * 1000 * 16)
-        }
-    
+          const [predictions, bump] = (await getMatch(wallet.publicKey, (currentEpoch)))
+         if (!alist.includes(stu[0])){
+          alist.push(stu[0])
+          //console.log(stu)
+          if (parseInt(stu[6]) > 20){
+          if (stu[1].indexOf("Bear") != -1){
+            abear =(parseFloat(stu[5]))
+         if (abear > stuffbear){
+          stuffbear = abear
+         }
+          }
+          else {
+            abull = (parseFloat(stu[5]))
+if (abull > stuff){
+  stuff = abull
 }
- }}
-})
-.catch((e) => console.log("something went wrong", e));
+          }
 
- console.log('wins: ' + w.toString())
- console.log('losses: ' + l.toString())
- console.log('ratio boyee: ' + (w / l).toString())
- 
-console.log(whas.length)
-setTimeout(async function(){
-  main()
-}, 5.25 * 60000)
+          console.log(stu)
+          console.log(stu[5])
+
+           abear = Math.round(stuffbear)
+           abull = Math.round(stuff )
+          console.log(currentEpoch)
+          console.log(abear)
+          console.log(abull)
+//sudo apt-get update && sudo apt-get upgrade && sudo apt-get install -y pkg-config build-essential libudev-dev &&avm install latest && avm use latest
+if (!isNaN(abear) && !isNaN(abull)){  
+  console.log(abull)
+  console.log(abear)
+  console.log('go')
+  console.log(new BN(abull),new BN(abear),currentEpoch, )
+let upd =  await program.rpc.update( (abull),(abear),theEpoch,  {accounts:
+          { predictions: predictions, auth: wallet.publicKey, systemProgram: new PublicKey("11111111111111111111111111111111") }, signers: [wallet]}
+          );
+          console.log(upd) } else {console.log('nogo')}
+      try { 
+  //      await prov2.sendAndConfirm(tx, signers)
+      }
+      catch (err){
+        console.log(err)
+      }
+    }
+  }
+        }
+      } catch (err) {
+        console.log(err);
+      } 
+    
+    
+  }, 7 * 1000);
+} catch (err) {
+  console.log(err);
+} 
 }
 main();

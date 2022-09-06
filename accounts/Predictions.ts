@@ -7,6 +7,8 @@ import { PROGRAM_ID } from "../programId"
 export interface PredictionsFields {
   bull: number
   bear: number
+  kbear: number
+  kbull: number
   epoch: number
   auth: PublicKey
 }
@@ -14,6 +16,8 @@ export interface PredictionsFields {
 export interface PredictionsJSON {
   bull: number
   bear: number
+  kbear: number
+  kbull: number
   epoch: number
   auth: string
 }
@@ -21,6 +25,8 @@ export interface PredictionsJSON {
 export class Predictions {
   readonly bull: number
   readonly bear: number
+  readonly kbear: number
+  readonly kbull: number
   readonly epoch: number
   readonly auth: PublicKey
 
@@ -31,6 +37,8 @@ export class Predictions {
   static readonly layout = borsh.struct([
     borsh.u8("bull"),
     borsh.u8("bear"),
+    borsh.u8("kbear"),
+    borsh.u8("kbull"),
     borsh.u32("epoch"),
     borsh.publicKey("auth"),
   ])
@@ -38,6 +46,8 @@ export class Predictions {
   constructor(fields: PredictionsFields) {
     this.bull = fields.bull
     this.bear = fields.bear
+    this.kbear = fields.kbear
+    this.kbull = fields.kbull
     this.epoch = fields.epoch
     this.auth = fields.auth
   }
@@ -71,14 +81,14 @@ export class Predictions {
       if (!info.owner.equals(PROGRAM_ID)) {
         throw new Error("account doesn't belong to this program")
       }
-
+// @ts-ignore
       return this.decode(info.data)
     })
   }
 
   static decode(data: Buffer): Predictions {
     if (!data.slice(0, 8).equals(Predictions.discriminator)) {
-      throw new Error("invalid account discriminator")
+     // throw new Error("invalid account discriminator")
     }
 
     const dec = Predictions.layout.decode(data.slice(8))
@@ -86,6 +96,8 @@ export class Predictions {
     return new Predictions({
       bull: dec.bull,
       bear: dec.bear,
+      kbear: dec.kbear,
+      kbull: dec.kbull,
       epoch: dec.epoch,
       auth: dec.auth,
     })
@@ -95,6 +107,8 @@ export class Predictions {
     return {
       bull: this.bull,
       bear: this.bear,
+      kbear: this.kbear,
+      kbull: this.kbull,
       epoch: this.epoch,
       auth: this.auth.toString(),
     }
@@ -104,6 +118,8 @@ export class Predictions {
     return new Predictions({
       bull: obj.bull,
       bear: obj.bear,
+      kbear: obj.kbear,
+      kbull: obj.kbull,
       epoch: obj.epoch,
       auth: new PublicKey(obj.auth),
     })

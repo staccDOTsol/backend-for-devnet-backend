@@ -4,31 +4,31 @@ import * as types from "../types" // eslint-disable-line @typescript-eslint/no-u
 import * as borsh from "@project-serum/borsh"
 
 export interface InitializeFanoutArgs2Fields {
-  bulls: number
-  bears: number
-  epochs: number
+  epoch: number
+  bull: number
+  bear: number
 }
 
 export interface InitializeFanoutArgs2JSON {
-  bulls: number
-  bears: number
-  epochs: number
+  epoch: number
+  bull: number
+  bear: number
 }
 
 export class InitializeFanoutArgs2 {
-  readonly bulls: number
-  readonly bears: number
-  readonly epochs: number
+  readonly epoch: number
+  readonly bull: number
+  readonly bear: number
 
   constructor(fields: InitializeFanoutArgs2Fields) {
-    this.bulls = fields.bulls
-    this.bears = fields.bears
-    this.epochs = fields.epochs
+    this.epoch = fields.epoch
+    this.bull = fields.bull
+    this.bear = fields.bear
   }
 
   static layout(property?: string) {
     return borsh.struct(
-      [borsh.u8("bulls"), borsh.u8("bears"), borsh.u8("epochs")],
+      [borsh.u32("epoch"), borsh.u32("bull"), borsh.u32("bear")],
       property
     )
   }
@@ -36,33 +36,33 @@ export class InitializeFanoutArgs2 {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static fromDecoded(obj: any) {
     return new InitializeFanoutArgs2({
-      bulls: obj.bulls,
-      bears: obj.bears,
-      epochs: obj.epochs,
+      epoch: obj.epoch,
+      bull: obj.bull,
+      bear: obj.bear,
     })
   }
 
   static toEncodable(fields: InitializeFanoutArgs2Fields) {
     return {
-      bulls: fields.bulls,
-      bears: fields.bears,
-      epochs: fields.epochs,
+      epoch: fields.epoch,
+      bull: fields.bull,
+      bear: fields.bear,
     }
   }
 
   toJSON(): InitializeFanoutArgs2JSON {
     return {
-      bulls: this.bulls,
-      bears: this.bears,
-      epochs: this.epochs,
+      epoch: this.epoch,
+      bull: this.bull,
+      bear: this.bear,
     }
   }
 
   static fromJSON(obj: InitializeFanoutArgs2JSON): InitializeFanoutArgs2 {
     return new InitializeFanoutArgs2({
-      bulls: obj.bulls,
-      bears: obj.bears,
-      epochs: obj.epochs,
+      epoch: obj.epoch,
+      bull: obj.bull,
+      bear: obj.bear,
     })
   }
 

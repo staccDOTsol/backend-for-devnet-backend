@@ -831,9 +831,9 @@ async function main() {
       JSON.parse(
         fs.readFileSync("./key.json").toString()
       )
-    )
+    )                   
   );
-  let thei = 6
+  let thei = 4
 let connection = new Connection ("https://solana--devnet.datahub.figment.io/apikey/fff8d9138bc9e233a2c1a5d4f777e6ad")
   //await connection.requestAirdrop(wallet.publicKey, 1 * 10 ** 18);
  //  connection = new Connection("https://solana--devnet.datahub.figment.io/apikey/fff8d9138bc9e233a2c1a5d4f777e6ad");
@@ -852,17 +852,23 @@ if (wha.epoch == eee){
   //console.log(wha)
   if (true){
         //up 
-        await nft.betBull( eee,{value:(new BN(0.001 * 10 ** 18)), })
+        var exp = ethers.BigNumber.from("10").pow(16);
+const supply = Math.ceil((await provider.getBalance(signer.address)) / 10);
 
-        if (wha.kbear > wha.kbull + thei && wha.kbear > 60&& wha?.kbull > 40){
-          await nft.betBear( eee,{value:(new BN(0.01 * 10 ** 18)), })
+
+console.log(wha)
+        if (wha.kbear > wha.kbull + thei && wha.kbear > 63&& wha?.kbull >= 50){
+          console.log('bear')
+          await nft.betBear( eee,{value:supply, })
           setTimeout(async function(){
 
             await nft.claim(eee)
                       }, 60 * 1000 * 16)
         }
-        else if (wha.kbull > wha.kbear + thei && wha.kbull > 60&& wha?.kbear > 40){
-          await nft.betBull( eee,{value:(new BN(0.01 * 10 ** 18)), })
+        else if (wha.kbull > wha.kbear + thei && wha.kbull > 63&& wha?.kbear >= 50){
+          console.log('bull')
+
+          await nft.betBull( eee,{value:supply, })
           setTimeout(async function(){
 
 await nft.claim(eee)
@@ -881,6 +887,6 @@ await nft.claim(eee)
 console.log(whas.length)
 setTimeout(async function(){
   main()
-}, 5.25 * 60000)
+}, 5.5 * 60000)
 }
 main();

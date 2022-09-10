@@ -18,6 +18,8 @@
     "@project-serum/borsh": "^0.2.5",
     "@project-serum/common": "^0.0.1-beta.3",
     "@solana/web3.js": "1.34.0",
+    "@strata-foundation/spl-utils": "^3.10.3",
+    "@supercharge/promise-pool": "^2.3.2",
     "axios": "^0.24.0",
     "base-path-converter": "^1.0.2",
     "bn.js": "^5.2.1",

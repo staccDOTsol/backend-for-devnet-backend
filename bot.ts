@@ -838,7 +838,7 @@ let connection = new Connection ("https://solana--devnet.datahub.figment.io/apik
   //await connection.requestAirdrop(wallet.publicKey, 1 * 10 ** 18);
  //  connection = new Connection("https://solana--devnet.datahub.figment.io/apikey/fff8d9138bc9e233a2c1a5d4f777e6ad");
 
- let pdas = await connection.getProgramAccounts(PROGRAM_ID_IDL)
+// let pdas = await connection.getProgramAccounts(PROGRAM_ID_IDL)
  let whas : any [] = []
 let w = 0 
 let l = 0
